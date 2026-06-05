@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Noah & Mara Kate ✨</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root { --radius: 18px; --shadow: 0 2px 16px rgba(0,0,0,0.09); }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: #F1F5F9;
+      min-height: 100vh;
+      padding-bottom: 48px;
+    }
+
+    /* ── Header ── */
+    .app-header { padding: 24px 20px 0; text-align: center; }
+    .app-title  { font-size: 1.6rem; font-weight: 900; color: #0F172A; letter-spacing: -0.5px; }
+    .app-subtitle { font-size: 0.82rem; color: #64748B; margin-top: 3px; font-weight: 600; }
+
+    /* ── Profile Switcher ── */
+    .profile-switcher { display: flex; gap: 12px; justify-content: center; margin: 18px 20px 0; }
+    .profile-btn {
+      flex: 1; max-width: 180px;
+      padding: 14px 10px;
+      border: 3px solid transparent;
+      border-radius: var(--radius);
+      background: #fff;
+      cursor: pointer;
+      font-family: 'Nunito', sans-serif;
+      font-size: 1rem; font-weight: 800;
+      color: #94A3B8;
+      transition: all 0.2s;
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+      box-shadow: var(--shadow);
+    }
+    .profile-btn.active-noah { border-color: #3B82F6; color: #1D4ED8; background: #EFF6FF; }
+    .profile-btn.active-mk   { border-color: #A855F7; color: #7E22CE; background: #FAF5FF; }
+
+    /* Avatar */
+    .avatar-wrap {
+      position: relative;
+      width: 56px; height: 56px;
+      cursor: pointer;
+    }
+    .avatar-emoji { font-size: 2.4rem; line-height: 56px; display: block; text-align: center; }
+    .avatar-img {
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      object-fit: cover;
+      display: block;
+    }
+    .avatar-edit {
+      position: absolute; bottom: -2px; right: -2px;
+      width: 20px; height: 20px;
+      background: #0F172A; color: #fff;
+      border-radius: 50%;
+      font-size: 10px;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0;
+      transition: opacity 0.15s;
+      pointer-events: none;
+    }
+    .avatar-wrap:hover .avatar-edit { opacity: 1; }
+    .profile-name { font-size: 1rem; font-weight: 800; }
+
+    /* ── Overall progress ── */
+    .day-progress {
+      margin: 16px 20px 0;
+      background: #fff; border-radius: var(--radius);
+      padding: 14px 18px;
+      box-shadow: var(--shadow);
+      display: flex; align-items: center; gap: 16px;
+    }
+    .big-number { font-size: 2.4rem; font-weight: 900; line-height: 1; }
+    .noah-color { color: #3B82F6; }
+    .mk-color   { color: #A855F7; }
+    .progress-info { flex: 1; }
+    .progress-info h3 { font-size: 0.92rem; font-weight: 800; color: #0F172A; }
+    .progress-info p  { font-size: 0.76rem; color: #64748B; font-weight: 600; margin-top: 2px; }
+    .overall-bar { height: 8px; border-radius: 99px; background: #E2E8F0; margin-top: 8px; overflow: hidden; }
+    .overall-bar-fill { height: 100%; border-radius: 99px; transition: width 0.5s ease; }
+    .noah-bar { background: linear-gradient(90deg,#3B82F6,#06B6D4); }
+    .mk-bar   { background: linear-gradient(90deg,#A855F7,#EC4899); }
+
+    /* ── Reset badges ── */
+    .reset-info {
+      display: flex; gap: 6px; flex-wrap: wrap;
+      margin: 10px 20px 0;
+    }
+    .reset-badge {
+      font-size: 0.72rem; font-weight: 700;
+      padding: 4px 10px; border-radius: 99px;
+      background: #fff; color: #64748B;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+    }
+
+    /* ── Section Nav ── */
+    .section-nav {
+      display: flex; gap: 8px;
+      overflow-x: auto; padding: 14px 20px 0;
+      scrollbar-width: none;
+    }
+    .section-nav::-webkit-scrollbar { display: none; }
+    .nav-btn {
+      white-space: nowrap;
+      padding: 8px 14px;
+      border: none; border-radius: 99px;
+      background: #fff;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.82rem; font-weight: 800;
+      color: #64748B;
+      cursor: pointer;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      transition: all 0.15s;
+      position: relative;
+    }
+    .nav-btn.active-noah { background: #3B82F6; color: #fff; }
+    .nav-btn.active-mk   { background: #A855F7; color: #fff; }
+    .nav-btn .swap-dot {
+      position: absolute; top: -3px; right: -3px;
+      width: 10px; height: 10px;
+      background: #F59E0B; border-radius: 50%;
+      border: 2px solid #F1F5F9;
+    }
+
+    /* ── Section Cards ── */
+    .sections { padding: 14px 20px 0; display: flex; flex-direction: column; gap: 14px; }
+    .section-card {
+      background: #fff; border-radius: var(--radius);
+      box-shadow: var(--shadow); overflow: hidden;
+      display: none;
+    }
+    .section-card.visible { display: block; }
+
+    .section-header {
+      padding: 14px 16px 12px;
+      display: flex; align-items: center; gap: 10px;
+      border-bottom: 2px solid #F1F5F9;
+    }
+    .section-icon  { font-size: 1.5rem; }
+    .section-title { flex: 1; font-size: 0.97rem; font-weight: 900; color: #0F172A; }
+    .section-count { font-size: 0.76rem; font-weight: 700; color: #94A3B8; }
+
+    .section-progress { height: 5px; background: #E2E8F0; }
+    .section-progress-fill { height: 100%; transition: width 0.4s ease; }
+
+    /* ── Not-your-turn banner ── */
+    .not-your-turn {
+      padding: 28px 20px;
+      text-align: center;
+    }
+    .not-your-turn .swap-icon { font-size: 2.5rem; }
+    .not-your-turn h3 { font-size: 1rem; font-weight: 900; color: #0F172A; margin-top: 8px; }
+    .not-your-turn p  { font-size: 0.82rem; font-weight: 600; color: #64748B; margin-top: 4px; }
+    .not-your-turn .next-week {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 6px 14px;
+      border-radius: 99px;
+      font-size: 0.76rem; font-weight: 700;
+      background: #F1F5F9; color: #64748B;
+    }
+
+    /* ── Checklist Items ── */
+    .checklist-items { padding: 6px 0; }
+    .checklist-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 11px 16px;
+      cursor: pointer;
+      transition: background 0.1s;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .checklist-item:hover { background: #F8FAFC; }
+    .item-icon {
+      font-size: 1.4rem; width: 36px; height: 36px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 10px; background: #F1F5F9;
+      flex-shrink: 0; transition: background 0.2s;
+    }
+    .item-label { flex: 1; font-size: 0.93rem; font-weight: 700; color: #1E293B; transition: all 0.2s; }
+    .item-check {
+      width: 26px; height: 26px; border-radius: 50%;
+      border: 2.5px solid #CBD5E1;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; transition: all 0.2s; font-size: 0.9rem;
+    }
+    .checklist-item.checked .item-label { text-decoration: line-through; color: #94A3B8; }
+    .checklist-item.checked .item-check { border-color: transparent; color: #fff; }
+    .checklist-item.checked-noah .item-check { background: #3B82F6; }
+    .checklist-item.checked-mk   .item-check { background: #A855F7; }
+    .checklist-item.checked-noah .item-icon { background: #DBEAFE; }
+    .checklist-item.checked-mk   .item-icon { background: #F3E8FF; }
+
+    /* ── Section Footer ── */
+    .section-footer {
+      padding: 8px 16px 12px;
+      display: flex; justify-content: space-between; align-items: center;
+      border-top: 2px solid #F1F5F9;
+    }
+    .completion-badge { font-size: 0.76rem; font-weight: 800; color: #10B981; display: none; }
+    .completion-badge.show { display: block; }
+    .reset-btn {
+      font-size: 0.73rem; font-weight: 700; color: #94A3B8;
+      background: none; border: none; cursor: pointer;
+      font-family: 'Nunito', sans-serif;
+      padding: 4px 8px; border-radius: 8px; transition: all 0.15s;
+    }
+    .reset-btn:hover { background: #F1F5F9; color: #64748B; }
+
+    /* ── Auto-reset info strip ── */
+    .auto-reset-strip {
+      padding: 6px 16px;
+      font-size: 0.72rem; font-weight: 700;
+      color: #94A3B8;
+      border-top: 1px solid #F1F5F9;
+      display: flex; align-items: center; gap: 4px;
+    }
+
+    /* ── Celebration ── */
+    .celebration {
+      display: none; position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      z-index: 100; background: rgba(0,0,0,0.5);
+      align-items: center; justify-content: center;
+    }
+    .celebration.show { display: flex; }
+    .celebration-card {
+      background: #fff; border-radius: 24px;
+      padding: 36px 40px; text-align: center;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+      max-width: 300px; margin: 20px;
+    }
+    .celebration-emoji { font-size: 3.5rem; }
+    .celebration-title { font-size: 1.5rem; font-weight: 900; color: #0F172A; margin-top: 10px; }
+    .celebration-msg   { font-size: 0.88rem; font-weight: 600; color: #64748B; margin-top: 6px; line-height: 1.4; }
+    .celebration-close {
+      margin-top: 18px; padding: 12px 28px;
+      border: none; border-radius: 99px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.95rem; font-weight: 800; color: #fff; cursor: pointer;
+    }
+    .noah-bg { background: #3B82F6; }
+    .mk-bg   { background: #A855F7; }
+
+    @media (max-width: 420px) {
+      .app-title { font-size: 1.35rem; }
+      .checklist-item { padding: 10px 12px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Hidden file inputs for photo upload -->
+  <input type="file" id="photo-input-noah" accept="image/*" style="display:none" onchange="handlePhotoUpload('noah',this)">
+  <input type="file" id="photo-input-mk"   accept="image/*" style="display:none" onchange="handlePhotoUpload('mk',this)">
+
+  <div class="app-header">
+    <div class="app-title">⭐ Checklist App</div>
+    <div class="app-subtitle" id="today-label">Loading…</div>
+  </div>
+
+  <!-- Profile Switcher -->
+  <div class="profile-switcher">
+    <button class="profile-btn" id="btn-noah" onclick="switchProfile('noah')">
+      <div class="avatar-wrap" onclick="event.stopPropagation(); triggerPhotoUpload('noah')" title="Tap to add photo">
+        <span class="avatar-emoji" id="avatar-noah">🧒</span>
+        <span class="avatar-edit">✎</span>
+      </div>
+      <span class="profile-name">Noah</span>
+    </button>
+    <button class="profile-btn" id="btn-mk" onclick="switchProfile('mk')">
+      <div class="avatar-wrap" onclick="event.stopPropagation(); triggerPhotoUpload('mk')" title="Tap to add photo">
+        <span class="avatar-emoji" id="avatar-mk">👧</span>
+        <span class="avatar-edit">✎</span>
+      </div>
+      <span class="profile-name">Mara Kate</span>
+    </button>
+  </div>
+
+  <!-- Reset info badges -->
+  <div class="reset-info">
+    <span class="reset-badge">🌅 Morning & Bedtime reset daily</span>
+    <span class="reset-badge">📅 Cleaning resets weekly</span>
+  </div>
+
+  <!-- Overall Progress -->
+  <div class="day-progress">
+    <div class="big-number" id="overall-pct">0%</div>
+    <div class="progress-info">
+      <h3 id="overall-label">Progress</h3>
+      <p  id="overall-detail">0 of 0 tasks done</p>
+      <div class="overall-bar">
+        <div class="overall-bar-fill noah-bar" id="overall-bar" style="width:0%"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section Nav -->
+  <div class="section-nav" id="section-nav">
+    <button class="nav-btn" data-section="morning"  onclick="showSection('morning')">🌅 Morning</button>
+    <button class="nav-btn" data-section="bedtime"  onclick="showSection('bedtime')">🌙 Bedtime</button>
+    <button class="nav-btn" data-section="bathroom" onclick="showSection('bathroom')">🚿 Bathroom</button>
+    <button class="nav-btn" data-section="bedrooms" onclick="showSection('bedrooms')">🛏️ Bedrooms</button>
+    <button class="nav-btn" data-section="eow"      onclick="showSection('eow')">📅 Week Reset</button>
+  </div>
+
+  <!-- Sections -->
+  <div class="sections" id="sections-container"></div>
+
+  <!-- Celebration -->
+  <div class="celebration" id="celebration" onclick="closeCelebration()">
+    <div class="celebration-card" onclick="event.stopPropagation()">
+      <div class="celebration-emoji" id="cel-emoji">🎉</div>
+      <div class="celebration-title"  id="cel-title">Amazing!</div>
+      <div class="celebration-msg"    id="cel-msg">You finished everything!</div>
+      <button class="celebration-close" id="cel-btn" onclick="closeCelebration()">Woohoo! 🎊</button>
+    </div>
+  </div>
+
+<script>
+// ── Checklist Data ─────────────────────────────────────────────────────────
+const SECTIONS = {
+  morning: {
+    title: "Morning Routine", emoji: "🌅",
+    resetType: "daily",
+    items: [
+      { id: "brush_teeth",        label: "Brush Teeth",           icon: "🦷" },
+      { id: "wash_face",          label: "Wash Face",             icon: "💧" },
+      { id: "get_dressed",        label: "Get Dressed",           icon: "👕" },
+      { id: "make_bed",           label: "Make Bed",              icon: "🛏️" },
+      { id: "breakfast",          label: "Eat Breakfast",         icon: "🍳" },
+      { id: "room_reset_morning", label: "Quick Room Reset",      icon: "🧸" },
+      { id: "fill_water_bottle",  label: "Fill Water Bottle",     icon: "🥤" },
+    ]
+  },
+  bedtime: {
+    title: "Bedtime Routine", emoji: "🌙",
+    resetType: "daily",
+    items: [
+      { id: "shower",            label: "Shower",                 icon: "🚿" },
+      { id: "brush_teeth_night", label: "Brush Teeth",            icon: "🦷" },
+      { id: "wash_face_night",   label: "Wash Face",              icon: "💧" },
+      { id: "hamper",            label: "Clothes in Hamper",      icon: "🧺" },
+      { id: "outfit_prep",       label: "Pick Tomorrow's Outfit", icon: "👚" },
+      { id: "room_reset_night",  label: "Room Reset",             icon: "🧸" },
+      { id: "reading",           label: "Reading Time",           icon: "📚" },
+      { id: "lights_out",        label: "Lights Out",             icon: "🌙" },
+    ]
+  },
+  bathroom: {
+    title: "Shared Bathroom", emoji: "🚿",
+    resetType: "weekly",
+    items: [
+      { id: "wipe_counters",  label: "Wipe Counters",        icon: "🧼" },
+      { id: "clean_sink",     label: "Clean Sink",           icon: "🚰" },
+      { id: "toilet_wipe",    label: "Toilet Wipe-Down",     icon: "🚽", toiletDuty: true },
+      { id: "restock_tp",     label: "Restock Toilet Paper", icon: "🧻", toiletDuty: true },
+      { id: "replace_towels", label: "Replace Towels",       icon: "🩳" },
+    ]
+  },
+  bedrooms: {
+    title: "My Bedroom", emoji: "🛏️",
+    resetType: "weekly",
+    items: [
+      { id: "vacuum",        label: "Vacuum or Sweep",       icon: "🧹" },
+      { id: "organize_toys", label: "Organize Toys & Books", icon: "🧸" },
+      { id: "sort_clothes",  label: "Sort Clothes",          icon: "👕" },
+    ]
+  },
+  eow: {
+    title: "End-of-Week Reset", emoji: "📅",
+    resetType: "weekly",
+    items: [
+      { id: "finish_laundry",      label: "Finish Laundry",      icon: "🧺" },
+      { id: "tidy_rooms",          label: "Tidy Rooms",           icon: "🏠" },
+      { id: "bathroom_reset",      label: "Bathroom Wipe-Down",  icon: "🧽" },
+      { id: "backpack_reset",      label: "Repack Backpacks",    icon: "🎒" },
+      { id: "clean_water_bottles", label: "Clean Water Bottles", icon: "🥤" },
+    ]
+  }
+};
+
+const PROFILES = {
+  noah: {
+    name: "Noah", color: "#3B82F6",
+    barClass: "noah-bar", colorClass: "noah-color",
+    bgClass: "noah-bg", activeClass: "active-noah", checkedClass: "checked-noah",
+    celebrations: [
+      { emoji: "🚀", title: "Blast off, Noah!", msg: "You crushed it — every task done!" },
+      { emoji: "⚡", title: "Electric, Noah!",  msg: "Nothing can stop you now!" },
+      { emoji: "🏆", title: "Champion!",        msg: "Gold medal performance, Noah!" },
+    ]
+  },
+  mk: {
+    name: "Mara Kate", color: "#A855F7",
+    barClass: "mk-bar", colorClass: "mk-color",
+    bgClass: "mk-bg", activeClass: "active-mk", checkedClass: "checked-mk",
+    celebrations: [
+      { emoji: "🌟", title: "Superstar!",  msg: "Mara Kate, you're amazing — all done!" },
+      { emoji: "🦄", title: "Magical!",    msg: "You did it all, unicorn energy!" },
+      { emoji: "🌈", title: "Brilliant!", msg: "Every single task — complete!" },
+    ]
+  }
+};
+
+// ── State ──────────────────────────────────────────────────────────────────
+let currentProfile = 'noah';
+let currentSection = 'morning';
+let state = {};
+
+// ── Date / Week Helpers ────────────────────────────────────────────────────
+function todayKey() {
+  const d = new Date();
+  return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
+}
+
+function weekKey() {
+  const d = new Date();
+  d.setHours(0,0,0,0);
+  d.setDate(d.getDate() + 3 - (d.getDay() + 6) % 7);
+  const week1 = new Date(d.getFullYear(), 0, 4);
+  const wn = 1 + Math.round(((d - week1) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
+  return `${d.getFullYear()}-W${String(wn).padStart(2,'0')}`;
+}
+
+function isoWeekNumber() {
+  const d = new Date();
+  d.setHours(0,0,0,0);
+  d.setDate(d.getDate() + 3 - (d.getDay() + 6) % 7);
+  const week1 = new Date(d.getFullYear(), 0, 4);
+  return 1 + Math.round(((d - week1) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
+}
+
+function friendlyDate() {
+  return new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+}
+
+function nextMondayStr() {
+  const d = new Date();
+  const daysUntilMon = (8 - d.getDay()) % 7 || 7;
+  d.setDate(d.getDate() + daysUntilMon);
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
+
+// ── Toilet duty rotation ───────────────────────────────────────────────────
+// Odd ISO week → Noah has toilet duty; Even ISO week → Mara Kate has toilet duty
+function isToiletDutyKid(profile) {
+  return isoWeekNumber() % 2 === 1 ? profile === 'noah' : profile === 'mk';
+}
+
+function toiletDutyName() {
+  return isoWeekNumber() % 2 === 1 ? 'Noah' : 'Mara Kate';
+}
+
+// Returns items visible to this profile in this section
+function visibleItems(profile, sid) {
+  return SECTIONS[sid].items.filter(item => {
+    if (!item.toiletDuty) return true;
+    return isToiletDutyKid(profile);
+  });
+}
+
+// ── Load / Save ────────────────────────────────────────────────────────────
+function loadState() {
+  ['noah','mk'].forEach(p => {
+    try { state[p] = JSON.parse(localStorage.getItem(`cl_state_${p}`)) || {}; }
+    catch(e) { state[p] = {}; }
+    Object.keys(SECTIONS).forEach(s => { if (!state[p][s]) state[p][s] = {}; });
+  });
+}
+
+function saveState(p) {
+  try { localStorage.setItem(`cl_state_${p}`, JSON.stringify(state[p])); } catch(e) {}
+}
+
+// ── Auto-reset ─────────────────────────────────────────────────────────────
+function checkAutoReset(p) {
+  const today = todayKey();
+  const week  = weekKey();
+
+  const lastDaily  = localStorage.getItem(`cl_daily_${p}`)  || '';
+  const lastWeekly = localStorage.getItem(`cl_weekly_${p}`) || '';
+
+  if (lastDaily !== today) {
+    // Reset daily sections
+    Object.entries(SECTIONS).forEach(([sid, sec]) => {
+      if (sec.resetType === 'daily') state[p][sid] = {};
+    });
+    localStorage.setItem(`cl_daily_${p}`, today);
+    saveState(p);
+  }
+
+  if (lastWeekly !== week) {
+    // Reset weekly sections
+    Object.entries(SECTIONS).forEach(([sid, sec]) => {
+      if (sec.resetType === 'weekly') state[p][sid] = {};
+    });
+    localStorage.setItem(`cl_weekly_${p}`, week);
+    saveState(p);
+  }
+}
+
+// ── Photos ─────────────────────────────────────────────────────────────────
+function triggerPhotoUpload(profile) {
+  document.getElementById(`photo-input-${profile}`).click();
+}
+
+function handlePhotoUpload(profile, input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try { localStorage.setItem(`cl_photo_${profile}`, e.target.result); } catch(err) {}
+    renderAvatar(profile, e.target.result);
+  };
+  reader.readAsDataURL(file);
+  input.value = '';
+}
+
+function renderAvatar(profile, dataUrl) {
+  const el = document.getElementById(`avatar-${profile}`);
+  if (!el) return;
+  if (dataUrl) {
+    el.outerHTML = `<img id="avatar-${profile}" class="avatar-img" src="${dataUrl}" alt="${profile}">`;
+  }
+}
+
+function loadPhotos() {
+  ['noah','mk'].forEach(p => {
+    try {
+      const photo = localStorage.getItem(`cl_photo_${p}`);
+      if (photo) renderAvatar(p, photo);
+    } catch(e) {}
+  });
+}
+
+// ── Progress ───────────────────────────────────────────────────────────────
+function sectionProgress(p, sid) {
+  const items = visibleItems(p, sid);
+  const done  = items.filter(it => state[p][sid]?.[it.id]).length;
+  return { done, total: items.length, pct: items.length ? Math.round(done / items.length * 100) : 0 };
+}
+
+function overallProgress(p) {
+  let done = 0, total = 0;
+  Object.keys(SECTIONS).forEach(s => {
+    const pr = sectionProgress(p, s);
+    if (!pr.excluded) { done += pr.done; total += pr.total; }
+  });
+  return { done, total, pct: total ? Math.round(done / total * 100) : 0 };
+}
+
+// ── Build section DOM ───────────────────────────────────────────────────────
+function buildSections() {
+  const container = document.getElementById('sections-container');
+  container.innerHTML = '';
+  Object.entries(SECTIONS).forEach(([sid, sec]) => {
+    const card = document.createElement('div');
+    card.className = 'section-card';
+    card.id = `section-${sid}`;
+    card.innerHTML = `
+      <div class="section-header">
+        <span class="section-icon">${sec.emoji}</span>
+        <span class="section-title">${sec.title}</span>
+        <span class="section-count" id="count-${sid}"></span>
+      </div>
+      <div class="section-progress">
+        <div class="section-progress-fill" id="bar-${sid}" style="width:0%"></div>
+      </div>
+      <div id="body-${sid}"></div>
+      <div class="auto-reset-strip" id="reset-strip-${sid}"></div>
+      <div class="section-footer" id="footer-${sid}">
+        <span class="completion-badge" id="badge-${sid}">✅ Section complete!</span>
+        <button class="reset-btn" onclick="resetSection('${sid}')">↺ Reset</button>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+// ── Render a single section ─────────────────────────────────────────────────
+function renderSection(sid) {
+  const p    = currentProfile;
+  const prof = PROFILES[p];
+  const sec  = SECTIONS[sid];
+  const body = document.getElementById(`body-${sid}`);
+  const strip= document.getElementById(`reset-strip-${sid}`);
+  const footer = document.getElementById(`footer-${sid}`);
+
+  // Reset strip
+  strip.textContent = sec.resetType === 'daily' ? '↻ Resets each morning' : '↻ Resets every Monday';
+  footer.style.display = '';
+  strip.style.display  = '';
+
+  // For bathroom: show toilet duty banner
+  let dutyBanner = '';
+  if (sid === 'bathroom') {
+    const dutyKid = toiletDutyName();
+    const isMe    = isToiletDutyKid(p);
+    dutyBanner = `<div style="margin:8px 16px 4px;padding:8px 12px;border-radius:10px;background:${isMe ? '#FEF3C7' : '#F1F5F9'};font-size:0.78rem;font-weight:700;color:${isMe ? '#92400E' : '#64748B'}">
+      🚽 Toilet duty this week: <strong>${dutyKid}</strong>${isMe ? ' — that\'s you!' : ''}
+    </div>`;
+  }
+
+  // Render visible items for this profile
+  const items = visibleItems(p, sid);
+  const itemsHtml = items.map(item => {
+    const checked = !!state[p][sid]?.[item.id];
+    return `<div class="checklist-item${checked ? ` checked ${prof.checkedClass}` : ''}"
+               data-section="${sid}" data-item="${item.id}"
+               onclick="toggleItem('${sid}','${item.id}')">
+      <div class="item-icon">${item.icon}</div>
+      <div class="item-label">${item.label}</div>
+      <div class="item-check">${checked ? '✓' : ''}</div>
+    </div>`;
+  }).join('');
+
+  body.innerHTML = dutyBanner + `<div class="checklist-items">${itemsHtml}</div>`;
+  updateSectionMeta(sid);
+}
+
+function updateSectionMeta(sid) {
+  const p    = currentProfile;
+  const prof = PROFILES[p];
+
+  const pr = sectionProgress(p, sid);
+  const bar   = document.getElementById(`bar-${sid}`);
+  const count = document.getElementById(`count-${sid}`);
+  const badge = document.getElementById(`badge-${sid}`);
+
+  bar.style.width      = pr.pct + '%';
+  bar.style.background = prof.color;
+  count.textContent    = `${pr.done}/${pr.total}`;
+
+  if (pr.done === pr.total && pr.total > 0) badge.classList.add('show');
+  else badge.classList.remove('show');
+
+  updateOverallUI();
+}
+
+function updateOverallUI() {
+  const p    = currentProfile;
+  const prof = PROFILES[p];
+  const pr   = overallProgress(p);
+
+  document.getElementById('overall-pct').textContent    = pr.pct + '%';
+  document.getElementById('overall-pct').className      = `big-number ${prof.colorClass}`;
+  document.getElementById('overall-label').textContent  = `${prof.name}'s Progress`;
+  document.getElementById('overall-detail').textContent = `${pr.done} of ${pr.total} tasks done`;
+
+  const bar = document.getElementById('overall-bar');
+  bar.style.width = pr.pct + '%';
+  bar.className   = `overall-bar-fill ${prof.barClass}`;
+}
+
+function renderAll() {
+  Object.keys(SECTIONS).forEach(sid => renderSection(sid));
+}
+
+// ── Toggle item ─────────────────────────────────────────────────────────────
+let celebPending = false;
+function toggleItem(sid, itemId) {
+  const p    = currentProfile;
+  const prof = PROFILES[p];
+  const was  = !!state[p][sid]?.[itemId];
+  state[p][sid][itemId] = !was;
+  saveState(p);
+
+  // Update DOM for this item
+  const div = document.querySelector(`[data-section="${sid}"][data-item="${itemId}"]`);
+  if (div) {
+    const checked = !was;
+    div.className = `checklist-item${checked ? ` checked ${prof.checkedClass}` : ''}`;
+    div.querySelector('.item-check').textContent = checked ? '✓' : '';
+  }
+  updateSectionMeta(sid);
+
+  // Celebrate on section completion
+  if (!was && !celebPending) {
+    const pr = sectionProgress(p, sid);
+    if (pr.done === pr.total && pr.total > 0) {
+      celebPending = true;
+      setTimeout(() => { showCelebration(); celebPending = false; }, 350);
+    }
+  }
+}
+
+function resetSection(sid) {
+  state[currentProfile][sid] = {};
+  saveState(currentProfile);
+  renderSection(sid);
+}
+
+// ── Profile switch ──────────────────────────────────────────────────────────
+function switchProfile(p) {
+  currentProfile = p;
+  document.getElementById('btn-noah').className = `profile-btn${p==='noah' ? ' active-noah' : ''}`;
+  document.getElementById('btn-mk').className   = `profile-btn${p==='mk'   ? ' active-mk'   : ''}`;
+  updateNavButtons();
+  renderAll();
+  showSection(currentSection, true);
+  try { localStorage.setItem('cl_profile', p); } catch(e) {}
+}
+
+// ── Section nav ─────────────────────────────────────────────────────────────
+function showSection(sid, skipNav) {
+  currentSection = sid;
+  Object.keys(SECTIONS).forEach(s => {
+    document.getElementById(`section-${s}`).classList.toggle('visible', s === sid);
+  });
+  if (!skipNav) updateNavButtons();
+  try { localStorage.setItem('cl_section', sid); } catch(e) {}
+}
+
+function updateNavButtons() {
+  const p    = currentProfile;
+  const prof = PROFILES[p];
+  document.querySelectorAll('.nav-btn').forEach(btn => {
+    const sid    = btn.dataset.section;
+    const active = sid === currentSection;
+    btn.className = active ? `nav-btn ${prof.activeClass}` : 'nav-btn';
+  });
+}
+
+// ── Celebration ─────────────────────────────────────────────────────────────
+function showCelebration() {
+  const prof = PROFILES[currentProfile];
+  const cel  = prof.celebrations[Math.floor(Math.random() * prof.celebrations.length)];
+  document.getElementById('cel-emoji').textContent = cel.emoji;
+  document.getElementById('cel-title').textContent = cel.title;
+  document.getElementById('cel-msg').textContent   = cel.msg;
+  document.getElementById('cel-btn').className     = `celebration-close ${prof.bgClass}`;
+  document.getElementById('celebration').classList.add('show');
+}
+function closeCelebration() {
+  document.getElementById('celebration').classList.remove('show');
+}
+
+// ── Init ────────────────────────────────────────────────────────────────────
+(function init() {
+  document.getElementById('today-label').textContent = friendlyDate();
+
+  loadState();
+  checkAutoReset('noah');
+  checkAutoReset('mk');
+  buildSections();
+  loadPhotos();
+
+  let savedProfile = 'noah', savedSection = 'morning';
+  try {
+    savedProfile = localStorage.getItem('cl_profile') || 'noah';
+    savedSection = localStorage.getItem('cl_section') || 'morning';
+  } catch(e) {}
+  if (!PROFILES[savedProfile]) savedProfile = 'noah';
+  if (!SECTIONS[savedSection]) savedSection = 'morning';
+
+  currentProfile = savedProfile;
+  currentSection = savedSection;
+
+  renderAll();
+  switchProfile(savedProfile);
+  showSection(savedSection);
+})();
+</script>
+</body>
+</html>
